@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Supervisor Monitor</title>
+        <link href="static/supervisor.css" rel="stylesheet" type="text/css" />
+    </head>
+<body>
+<div id="wrapper">
+    <div id="header">
+        <br>
+        <h1 id="titleIcon"> Supervisor Monitor </h1>
+    </div>
+    <br>
+
+    {% for supervisor in supervisors %}
+
+    {% if supervisor.name %}
+        <h2 class='title'>{{ supervisor.name }} </h2>
+    {% endif %}
+    
+    <a class='title' href={{ supervisor.href }}>{{ supervisor.ip }}</a>
+    
+    <table cellspacing="0">
+        <thead>
+            <tr>
+                <th class="state">State</th>
+                <th class="desc">Description</th>
+            <th class="name">Name</th>
+        </tr>
+        </thead>
+
+        {% for value in supervisor.details %}
+        <tbody>
+            {% if loop.index0 is even%}
+                <tr class="shade">
+            {% else %}
+                <tr class="">
+            {% endif %}
+                {% if value.state == 20 %}
+                    <td class="status"><span class="statusrunning">{{ value.statename }}</span></td>
+                {% elif value.state == 10 %}
+                    <td class="status"><span class="statuserror">{{ value.statename }}</span></td>
+                {% else %}
+                    <td class="status"><span class="statusnominal">{{ value.statename }}</span></td>
+                {% endif %}
+            
+                <td><span>{{ value.description }}</span></td>
+                <td>{{ value.name }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        </table>
+        <br>
+        <br>
+        {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
