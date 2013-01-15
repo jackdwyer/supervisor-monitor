@@ -20,6 +20,8 @@
     
     <a class='title' href={{ supervisor.href }}>{{ supervisor.ip }}</a>
     
+    {% if supervisor.details %}
+
     <table cellspacing="0">
         <thead>
             <tr>
@@ -28,30 +30,37 @@
             <th class="name">Name</th>
         </tr>
         </thead>
-
-        {% for value in supervisor.details %}
-        <tbody>
-            {% if loop.index0 is even%}
-                <tr class="shade">
-            {% else %}
-                <tr class="">
-            {% endif %}
-                {% if value.state == 20 %}
-                    <td class="status"><span class="statusrunning">{{ value.statename }}</span></td>
-                {% elif value.state == 10 %}
-                    <td class="status"><span class="statuserror">{{ value.statename }}</span></td>
+                {% for value in supervisor.details %}
+                <tbody>
+                    {% if loop.index0 is even%}
+                        <tr class="shade">
+                    {% else %}
+                        <tr class="">
+                    {% endif %}
+                        {% if value.state == 20 %}
+                            <td class="status"><span class="statusrunning">{{ value.statename }}</span></td>
+                        {% elif value.state == 10 %}
+                            <td class="status"><span class="statuserror">{{ value.statename }}</span></td>
+                        {% else %}
+                            <td class="status"><span class="statusnominal">{{ value.statename }}</span></td>
+                        {% endif %}
+                    
+                        <td><span>{{ value.description }}</span></td>
+                        <td>{{ value.name }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                </table>
                 {% else %}
-                    <td class="status"><span class="statusnominal">{{ value.statename }}</span></td>
+                    <br>
+                    <br>
+                    <h2> Error </h2>
+                    <p>Socket.Error on supervisor.getAllProcessInfo()</p>
+                    <p>Check IP, PORT and that Supervisord is running</p>
+
                 {% endif %}
-            
-                <td><span>{{ value.description }}</span></td>
-                <td>{{ value.name }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-        </table>
-        <br>
-        <br>
+                <br>
+                <br>
         {% endfor %}
         </div>
     </div>
