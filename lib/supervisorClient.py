@@ -18,14 +18,10 @@ class SupervisorClient(object):
                 "href":self.URI.geturl(), "details":self.get_process_info()}
 
     def get_process_info(self):
-        f = open('t.t', 'a')
         try:
-            f.write(self.server.supervisor.getAllProcessInfo())
-            f.write('/n')
             return self.server.supervisor.getAllProcessInfo()
         except IOError:
             return None
-        f.close()
 
 
 
