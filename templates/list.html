@@ -46,7 +46,11 @@
                         {% endif %}
                     
                         <td><span>{{ value.description }}</span></td>
+                    {% if value.group  != value.name %}
+                        <td>{{ value.group }}:{{ value.name }} </td>
+                    {% else %}
                         <td>{{ value.name }}</td>
+                    {% endif %}
                     </tr>
                     {% endfor %}
                 </tbody>
