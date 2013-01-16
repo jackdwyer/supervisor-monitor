@@ -56,12 +56,9 @@
                 </tbody>
                 </table>
                 {% else %}
-                    <br>
-                    <br>
-                    <h2> Error </h2>
+                    <h2 class="statuserror">Error </h2>
                     <p>Socket.Error on supervisor.getAllProcessInfo()</p>
                     <p>Check IP, PORT and that Supervisord is running</p>
-
                 {% endif %}
                 <br>
                 <br>
