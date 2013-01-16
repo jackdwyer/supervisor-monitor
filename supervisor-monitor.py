@@ -25,7 +25,6 @@ if __name__ == "__main__":
     #Generate Supervisor clients
     for detail in clientDetails:
         uri = urlparse(detail[0])
-        print uri
         try:
             name = detail[1]
         except IndexError:
