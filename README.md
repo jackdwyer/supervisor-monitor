@@ -1,7 +1,13 @@
-Simple app that allows you to view all distributed supervisor clients from one location, set up from a single config file
+#Supervisor Monitor
+Simple web based app that allows you to view all your supervisor clients from one location.
 
-uses:  
-flask  
-xmlrpclib  
-css/styling from supervisor  
+##Uses:  
+* flask  
+* xmlrpclib  
+* yaml
 
+##Thanks
+[Supervisord (website)](http://supervisord.org/)
+[Supervisord github](https://github.com/Supervisor/supervisor)
+
+I also ripped all your css etc for my generate pages
