@@ -23,4 +23,4 @@ optional arguments:
 
 [Supervisord github](https://github.com/Supervisor/supervisor)
 
-I also ripped all your css etc for my generate pages
+I also ripped all your css etc for my generate pages, so thanks!
