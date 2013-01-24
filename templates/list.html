@@ -1,68 +1,137 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
+    <script src="static/js/jquery-1.9.0.min.js"></script>
+    <script>
+        function hide(id) {
+            var table = $("#table_" + id);
+            var button = $("#button_" + id);
+            table.css('display', 'none');
+            button.text('Show');
+        }
+        
+        function show(id) {
+            var table = $("#table_" + id);
+            var button = $("#button_" + id);
+            table.css('display', '');
+            button.text('Hide');
+        }
+        
+        function switch_single(id) {
+            console.log("switch_single called");
+            var table = $("#table_"+id);
+            var button = $("#button_"+id);
+            if (table.css('display') != 'none') {
+                hide(id);
+            } else {
+                show(id);
+            }
+        }
+        
+        function switch_all() {
+            var button = $("#control_all");
+            if (button.text() == "Hide All") {
+                button.text("Show All");
+                for (var i=0; i<{{ supervisors|length }}; i++) {
+                    hide(i);
+                };
+            } else {
+                button.text("Hide All");
+                for (var i=0; i<{{ supervisors|length }}; i++) {
+                    show(i);
+                };
+            }
+        }
+        
+        function show_all() {
+            for (var i=0; i<{{ details.supervisors|length }}; i++) {
+                show(i);
+            };
+        }
+        
+        function hide_all() {
+            for (var i=0; i<{{ details.supervisors|length }}; i++) {
+                hide(i);
+            };
+        }
+    </script>
+    
     <head>
         <title>Supervisor Monitor</title>
-        <link href="static/supervisor.css" rel="stylesheet" type="text/css" />
+        <link href="static/supervisor.css" rel="stylesheet" type="text/css">
     </head>
 <body>
-<div id="wrapper">
-    <div id="header">
-        <br>
-        <h1 id="titleIcon"> Supervisor Monitor </h1>
-    </div>
-    <br>
+    <div id="wrapper">
+        <div id="header">
+            <img alt="Supervisor Monitor" src="static/supervisor-monitor.gif">
+        </div>
+        
+        <ul class="clr" id="buttons">
+            <li><button onclick="show_all()" id="control_all">Show All</button></li>
+            <li><button onclick="hide_all()" id="control_all">Hide All</button></li>
+            <li style="font-size: 18px"><strong>{{ details.totalRunning }}/{{ details.totalProcesses }} Processes</strong></li>
 
-    {% for supervisor in supervisors %}
-
-    {% if supervisor.name %}
-        <h2 class='title'>{{ supervisor.name }} </h2>
-    {% endif %}
-    
-    <a class='title' href={{ supervisor.href }}>{{ supervisor.ip }}</a>
-    
-    {% if supervisor.details %}
-
-    <table cellspacing="0">
-        <thead>
-            <tr>
-                <th class="state">State</th>
-                <th class="desc">Description</th>
-            <th class="name">Name</th>
-        </tr>
-        </thead>
-                {% for value in supervisor.details %}
-                <tbody>
-                    {% if loop.index0 is even%}
-                        <tr class="shade">
-                    {% else %}
-                        <tr class="">
-                    {% endif %}
-                        {% if value.state == 20 %}
-                            <td class="status"><span class="statusrunning">{{ value.statename }}</span></td>
-                        {% elif value.state == 10 %}
-                            <td class="status"><span class="statuserror">{{ value.statename }}</span></td>
-                        {% else %}
-                            <td class="status"><span class="statusnominal">{{ value.statename }}</span></td>
-                        {% endif %}
-                    
-                        <td><span>{{ value.description }}</span></td>
-                    {% if value.group  != value.name %}
-                        <td>{{ value.group }}:{{ value.name }} </td>
-                    {% else %}
-                        <td>{{ value.name }}</td>
-                    {% endif %}
-                    </tr>
-                    {% endfor %}
-                </tbody>
-                </table>
+        </ul>
+        {% for supervisor in details.supervisors %}
+            {% if supervisor.details %}
+                {% if supervisor.name %}
+                    <h2>{{ supervisor.name }}</h2>
                 {% else %}
-                    <h2 class="statuserror">Error </h2>
-                    <p>Socket.Error on supervisor.getAllProcessInfo()</p>
-                    <p>Check IP, PORT and that Supervisord is running</p>
+                    <h2>{{ supervisor.ip }}</h2>
+                {% endif %}
+            <ul>
+                <li><a href={{ supervisor.href }}>{{ supervisor.ip }}</a></li>
+                <li> | <strong>{{ supervisor.totalClientRunning }}/{{ supervisor.totalClientProcesses }}</strong> Processes</li>
+                <li> | <button id="button_{{ supervisor.id }}" onclick="switch_single({{ supervisor.id }})">Show</button> </li>
+            </ul>
+            <table cellspacing="0" id="table_{{ supervisor.id }}" style="display:none">
+                <thead>
+                    <tr>
+                        <th class="state">State</th>
+                        <th class="desc">Description</th>
+                        <th class="name">Name</th>
+                </tr>
+                </thead>
+                    <tbody>
+                        {% for value in supervisor.details %}
+                            {% if loop.index0 is even %}
+                                <tr class="shade">
+                            {% else %}
+                                <tr>
+                            {% endif %}
+                                {% if value.state == 20 %}
+                                    <td class="status"><span class="statusrunning">{{ value.statename|lower }}</span></td>
+                                {% elif value.state == 10 %}
+                                    <td class="status"><span class="statuserror">{{ value.statename|lower }}</span></td>
+                                {% else %}
+                                    <td class="status"><span class="statusnominal">{{ value.statename|lower }}</span></td>
+                                {% endif %}                        
+                                <td><span>{{ value.description }}</span></td>
+                            {% if value.group  != value.name %}
+                                <td>{{ value.group }}:{{ value.name }} </td>
+                            {% else %}
+                                <td>{{ value.name }}</td>
+                            {% endif %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        </table>
+                {% else %}
+                    {% if supervisor.name %}
+                        <h2 class="statuserror">{{ supervisor.name }}</h2>
+                    {% else %}
+                        <h2 class="statuserror">{{ supervisor.ip }}</h2>
+                    {% endif %}
+                        <ul>
+                            <li><a href={{ supervisor.href }}>{{ supervisor.ip }}</a></li>
+                            <li> | <strong>{{ supervisor.totalClientRunning }}/{{ supervisor.totalClientProcesses }}</strong> Processes</li>
+                        </ul>
+                        <p>Socket.Error on supervisor.getAllProcessInfo()</p>
+                        <p>Check IP, PORT and that Supervisord is running</p>
+                
                 {% endif %}
                 <br>
-                <br>
-        {% endfor %}
+            {% endfor %}
+            </div>
         </div>
     </div>
 </body>
