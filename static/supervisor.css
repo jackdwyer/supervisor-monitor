@@ -13,7 +13,7 @@
 
 /* =MAIN
 ----------------------------------------------- */
-body, td, input, select, textarea, a {
+body, td, input, select, textarea {
   font: 12px/1.5em arial, helvetica, verdana, sans-serif;
   color: #333;
 }
@@ -95,7 +95,7 @@ html, body {
 #header {
   margin-bottom: 13px;
   padding: 10px 0 13px 0;
-  background: url("../images/rule.gif") left bottom repeat-x;
+  background: url("../static/rule.gif") left bottom repeat-x;
 }
 .status_msg {
   padding: 5px 10px;
@@ -123,21 +123,21 @@ html, body {
 
 #refresh a {
   width: 62px;
-  background: url("../images/button_refresh.gif") 0 0 no-repeat;
+  background: url("../static/button_refresh.gif") 0 0 no-repeat;
 }
 #refresh a:hover {
   background-position: -62px;
 }
 #restart_all a {
   width: 84px;
-  background: url("../images/button_restart.gif") 0 0 no-repeat;
+  background: url("../static/button_restart.gif") 0 0 no-repeat;
 }
 #restart_all a:hover {
   background-position: -84px;
 }
 #stop_all a {
   width: 65px;
-  background: url("../images/button_stop.gif") 0 0 no-repeat;
+  background: url("../static/button_stop.gif") 0 0 no-repeat;
 }
 #stop_all a:hover {
   background-position: -65px;
@@ -218,4 +218,15 @@ tr.shade td {
 .title {
   font-size: 1.5em;
   margin-right: 0;
+}
+
+a, li, p {
+    font: 14px/1.5em arial, helvetica, verdana, sans-serif;
+    color: #333;
+}
+
+li {
+
+  display:inline;
+  list-style: none;
 }
