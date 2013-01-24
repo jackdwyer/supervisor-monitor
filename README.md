@@ -5,8 +5,11 @@ Simple web based app that allows you to view all your supervisor clients from on
 usage: supervisor-monitor.py [-h] [-p PORT] [--debug]
 
 optional arguments:
+
   -h, --help            show this help message and exit
+  
   -p PORT, --port PORT  Set port to run on
+  
   --debug               Use to start server in debug mode
 
 ##Requirements:  
@@ -17,6 +20,7 @@ optional arguments:
 
 ##Thanks
 [Supervisord (website)](http://supervisord.org/)
+
 [Supervisord github](https://github.com/Supervisor/supervisor)
 
 I also ripped all your css etc for my generate pages
