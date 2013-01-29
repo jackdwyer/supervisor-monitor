@@ -39,26 +39,29 @@ if __name__ == "__main__":
 
     results = parser.parse_args()
 
-    clientDetails = utils.parse_settings("settings.conf")
     clients = []
     #Generate Supervisor clients
     clientID = 0
-    for detail in clientDetails:
-        uri = urlparse(detail[0])
+    #for detail in clientDetails:
+    #    uri = urlparse(detail[0])
+    #    try:
+    #        name = detail[1]
+    #    except IndexError:
+    #        name = None
+    #    
+    #    clients.append(SupervisorClient(uri, clientID, name))
+        
+    
+    supervisors = utils.read_yaml()
+    for k, vl in supervisors.items():
         try:
-            name = detail[1]
-        except IndexError:
-            name = None
-        
-        clients.append(SupervisorClient(uri, clientID, name))
+            clients.append(SupervisorClient(urlparse(vl["scheme"] + "://" + k + ":" + str(vl["port"])),
+                                            clientID, vl["name"], vl["description"]))
+        except KeyError:
+            clients.append(SupervisorClient(urlparse(vl["scheme"] + "://" + k + ":" + str(vl["port"])),
+                                            clientID, vl["name"]))
         clientID += 1
-        
-        
-    try:
-        results.port = int(results.port)
-    except ValueError:
-        print "Error: must use a valid number for port"
-        sys.exit(1)
+
 
 
     app.clients = clients
