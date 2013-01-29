@@ -7,11 +7,12 @@ from xmlrpclib import ResponseError
 import utils
 
 class SupervisorClient(object):
-    def __init__(self, uri, clientID, name=None):
+    def __init__(self, uri, clientID, name=None, description=None):
         #uri is urlparse object
         self.URI = uri
         self.id = clientID
-        self.name = name    
+        self.name = name
+        self.description = description
         self.server = xmlrpclib.ServerProxy(self.URI.geturl())
 
     def get_details(self):
@@ -30,21 +31,13 @@ class SupervisorClient(object):
         return {"name": self.name, "ip":self.URI.netloc, "port":self.URI.port,
                 "href":self.URI.geturl(), "details":details,
                 "id":self.id, "totalClientProcesses":totalProcesses ,
-                "totalClientRunning":totalRunning, }
+                "totalClientRunning":totalRunning, "description":self.description}
 
     def get_process_info(self):
         try:
             return self.server.supervisor.getAllProcessInfo()
         except IOError:
             return None
-
-
-
-
-
-
-
-
 
     def __repr__(self):
         return self.__class__.__name__ + '(%s)' % (', '.join(map(repr, [self.name, self.URI.geturl()])))
