@@ -71,6 +71,9 @@
             <li style="font-size: 18px"><strong>{{ details.totalRunning }}/{{ details.totalProcesses }} Processes</strong></li>
 
         </ul>
+        
+        <fieldset>
+            <legend>Admin</legend>
         {% for supervisor in details.supervisors %}
             {% if supervisor.details %}
                 {% if supervisor.name %}
@@ -83,6 +86,9 @@
                 <li> | <strong>{{ supervisor.totalClientRunning }}/{{ supervisor.totalClientProcesses }}</strong> Processes</li>
                 <li> | <button id="button_{{ supervisor.id }}" onclick="switch_single({{ supervisor.id }})">Show</button> </li>
             </ul>
+            {% if supervisor.description %}
+                <p><strong>{{ supervisor.description }}</strong></p>
+            {% endif %}
             <table cellspacing="0" id="table_{{ supervisor.id }}" style="display:none">
                 <thead>
                     <tr>
@@ -133,6 +139,8 @@
             {% endfor %}
             </div>
         </div>
+            </fieldset>
+        
     </div>
 </body>
 </html>
