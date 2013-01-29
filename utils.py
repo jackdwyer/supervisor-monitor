@@ -1,4 +1,6 @@
 #Jack Dwyer 12-12-2012
+import yaml
+
 def parse_line(line):
     try:
         url, name = line.split(None, 1)
@@ -20,3 +22,20 @@ def read_file(file):
                 continue
             yield line
             line = f.readline()
+            
+def read_yaml():
+    #Test function
+    supervisors = {}
+    with open("settings.yaml", 'r') as f:
+        config = yaml.load(f)
+    
+    for k, vl in config.items():
+        if k == "DEFAULTS":
+            continue
+        supervisors[k]  = vl
+    
+    return supervisors
+
+if __name__ == "__main__":
+    supervisors = read_yaml()
+    print supervisors
