@@ -7,12 +7,13 @@ from xmlrpclib import ResponseError
 import utils
 
 class SupervisorClient(object):
-    def __init__(self, uri, clientID, name=None, description=None):
+    def __init__(self, uri, clientID, name=None, description=None, group=None):
         #uri is urlparse object
         self.URI = uri
         self.id = clientID
         self.name = name
         self.description = description
+        self.group = group
         self.server = xmlrpclib.ServerProxy(self.URI.geturl())
 
     def get_details(self):
