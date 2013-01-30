@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-    <script src="static/js/jquery-1.9.0.min.js"></script>
+    <script src="/static/js/jquery-1.9.0.min.js"></script>
     <script>
         function hide(id) {
             var table = $("#table_" + id);
@@ -43,13 +43,13 @@
         }
         
         function show_all() {
-            for (var i=0; i<{{ details.supervisors|length }}; i++) {
+            for (var i=0; i<{{ details.totalTables }}; i++) {
                 show(i);
             };
         }
         
         function hide_all() {
-            for (var i=0; i<{{ details.supervisors|length }}; i++) {
+            for (var i=0; i<{{ details.totalTables }}; i++) {
                 hide(i);
             };
         }
@@ -57,90 +57,112 @@
     
     <head>
         <title>Supervisor Monitor</title>
-        <link href="static/supervisor.css" rel="stylesheet" type="text/css">
+        <link href="/static/supervisor.css" rel="stylesheet" type="text/css">
     </head>
 <body>
     <div id="wrapper">
         <div id="header">
-            <a href="/"><img alt="Supervisor Monitor" src="static/supervisor-monitor.gif"></a>
-        </div>
+            <a href="/"><img alt="Supervisor Monitor" src="/static/supervisor-monitor.gif"></a>
         
+            <ul class="clr">
+                <li><a href="/">All</a> | </li>
+                {% for group in details.groups %}
+                    {% if loop.last %}
+                        <li><a href="/group/{{ group }}">{{ group }}</a></li>
+                    {% else %}
+                        <li><a href="/group/{{ group }}">{{ group }}</a> | </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+
         <ul class="clr" id="buttons">
             <li><button onclick="show_all()" id="control_all">Show All</button></li>
             <li><button onclick="hide_all()" id="control_all">Hide All</button></li>
-            <li style="font-size: 18px"><strong>{{ details.totalRunning }}/{{ details.totalProcesses }} Processes</strong></li>
-
+            {% if details.totalRunning != details.totalProcesses %}
+                <li style="font-size: 18px"><span class=statuserror><strong>{{ details.totalRunning }}/{{ details.totalProcesses }} Processes</strong></span></li>
+            {% else %}
+                <li style="font-size: 18px"><strong>{{ details.totalRunning }}/{{ details.totalProcesses }} Processes</strong></li>
+            {% endif %}
         </ul>
         
-        <fieldset>
-            <legend>Admin</legend>
-        {% for supervisor in details.supervisors %}
-            {% if supervisor.details %}
-                {% if supervisor.name %}
-                    <h2>{{ supervisor.name }}</h2>
-                {% else %}
-                    <h2>{{ supervisor.ip }}</h2>
-                {% endif %}
-            <ul>
-                <li><a href={{ supervisor.href }}>{{ supervisor.ip }}</a></li>
-                <li> | <strong>{{ supervisor.totalClientRunning }}/{{ supervisor.totalClientProcesses }}</strong> Processes</li>
-                <li> | <button id="button_{{ supervisor.id }}" onclick="switch_single({{ supervisor.id }})">Show</button> </li>
-            </ul>
-            {% if supervisor.description %}
-                <p><strong>{{ supervisor.description }}</strong></p>
-            {% endif %}
-            <table cellspacing="0" id="table_{{ supervisor.id }}" style="display:none">
-                <thead>
-                    <tr>
-                        <th class="state">State</th>
-                        <th class="desc">Description</th>
-                        <th class="name">Name</th>
-                </tr>
-                </thead>
-                    <tbody>
-                        {% for value in supervisor.details %}
-                            {% if loop.index0 is even %}
-                                <tr class="shade">
-                            {% else %}
-                                <tr>
-                            {% endif %}
-                                {% if value.state == 20 %}
-                                    <td class="status"><span class="statusrunning">{{ value.statename|lower }}</span></td>
-                                {% elif value.state == 10 %}
-                                    <td class="status"><span class="statuserror">{{ value.statename|lower }}</span></td>
-                                {% else %}
-                                    <td class="status"><span class="statusnominal">{{ value.statename|lower }}</span></td>
-                                {% endif %}                        
-                                <td><span>{{ value.description }}</span></td>
-                            {% if value.group  != value.name %}
-                                <td>{{ value.group }}:{{ value.name }} </td>
-                            {% else %}
-                                <td>{{ value.name }}</td>
-                            {% endif %}
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                        </table>
-                {% else %}
-                    {% if supervisor.name %}
-                        <h2 class="statuserror">{{ supervisor.name }}</h2>
-                    {% else %}
-                        <h2 class="statuserror">{{ supervisor.ip }}</h2>
-                    {% endif %}
-                        <ul>
-                            <li><a href={{ supervisor.href }}>{{ supervisor.ip }}</a></li>
-                            <li> | <strong>{{ supervisor.totalClientRunning }}/{{ supervisor.totalClientProcesses }}</strong> Processes</li>
-                        </ul>
-                        <p>Socket.Error on supervisor.getAllProcessInfo()</p>
-                        <p>Check IP, PORT and that Supervisord is running</p>
-                
-                {% endif %}
-                <br>
-            {% endfor %}
-            </div>
-        </div>
-            </fieldset>
+
         
+     
+        {% for key in details.supervisors %}
+           <fieldset>
+            <legend>{{ key }}</legend>
+            {% for supervisor in details.supervisors[key] %}                
+                {% if supervisor.details %}
+                    {% if supervisor.name %}
+                        <h2>{{ supervisor.name }}</h2>
+                    {% else %}
+                        <h2>{{ supervisor.ip }}</h2>
+                    {% endif %}
+                <ul>
+                    <li><a href={{ supervisor.href }}>{{ supervisor.ip }}</a></li>
+                    {% if supervisor.totalClientRunning != supervisor.totalClientProcesses %}
+                        <li> | <span class=statuserror><strong>{{ supervisor.totalClientRunning }}/{{ supervisor.totalClientProcesses }}</strong> Processes</span></li>
+                    {% else %}
+                        <li> | <strong>{{ supervisor.totalClientRunning }}/{{ supervisor.totalClientProcesses }}</strong> Processes</li>
+                    {% endif %}
+                    <li> | <button id="button_{{ supervisor.id }}" onclick="switch_single({{ supervisor.id }})">Show</button> </li>
+                </ul>
+                {% if supervisor.description %}
+                    <p><strong>{{ supervisor.description }}</strong></p>
+                {% endif %}
+                <table cellspacing="0" id="table_{{ supervisor.id }}" style="display:none">
+                    <thead>
+                        <tr>
+                            <th class="state">State</th>
+                            <th class="desc">Description</th>
+                            <th class="name">Name</th>
+                    </tr>
+                    </thead>
+                        <tbody>
+                            {% for value in supervisor.details %}
+                                {% if loop.index0 is even %}
+                                    <tr class="shade">
+                                {% else %}
+                                    <tr>
+                                {% endif %}
+                                    {% if value.state == 20 %}
+                                        <td class="status"><span class="statusrunning">{{ value.statename|lower }}</span></td>
+                                    {% elif value.state == 10 %}
+                                        <td class="status"><span class="statuserror">{{ value.statename|lower }}</span></td>
+                                    {% else %}
+                                        <td class="status"><span class="statusnominal">{{ value.statename|lower }}</span></td>
+                                    {% endif %}                        
+                                    <td><span>{{ value.description }}</span></td>
+                                {% if value.group  != value.name %}
+                                    <td>{{ value.group }}:{{ value.name }} </td>
+                                {% else %}
+                                    <td>{{ value.name }}</td>
+                                {% endif %}
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                            </table>
+                    {% else %}
+                        {% if supervisor.name %}
+                            <h2 class="statuserror">{{ supervisor.name }}</h2>
+                        {% else %}
+                            <h2 class="statuserror">{{ supervisor.ip }}</h2>
+                        {% endif %}
+                            <ul>
+                                <li><a href={{ supervisor.href }}>{{ supervisor.ip }}</a></li>
+                                <li> | <strong>{{ supervisor.totalClientRunning }}/{{ supervisor.totalClientProcesses }}</strong> Processes</li>
+                            </ul>
+                            <p>Socket.Error on supervisor.getAllProcessInfo()</p>
+                            <p>Check IP, PORT and that Supervisord is running</p>
+                    
+                    {% endif %}
+                    <br>
+                {% endfor %}
+            </fieldset>
+        {% endfor %}
+        </div>
+        </div>
     </div>
 </body>
 </html>
