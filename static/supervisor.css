@@ -27,9 +27,11 @@ form label {
 }
 fieldset {
   padding: 10px;
+  margin-top: 10px;
 }
 legend {
-  font: 16px/1.5em arial, helvetica, verdana, sans-serif;
+  font: 20px/1.5em arial, helvetica, verdana, sans-serif;
+  font-weight: bold;
   color: #333;
 }
 img, table {
@@ -230,7 +232,11 @@ a, li, p {
 }
 
 li {
-
   display:inline;
   list-style: none;
+}
+
+h2 {
+  font: 16px/1.5em arial, helvetica, verdana, sans-serif;
+  font-weight: bold;
 }
